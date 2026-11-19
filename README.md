@@ -5,31 +5,29 @@
 ## Live links
 - Client: https://as-fixmate.vercel.app
 - API: https://as-fixmate-api.vercel.app
-- Repository: https://github.com/as777hk/AS_Fixmate
+- GitHub monorepo: https://github.com/as777hk/AS_Fixmate
 
-Both Vercel projects are publicly reachable. The application build is deployed; configure the required server environment variables and seed the production database before testing authenticated and payment flows.
+The frontend and Express API are deployed as separate Vercel projects from the `client/` and `server/` roots of this repository. MongoDB Atlas is connected to the production API. The production database is seeded with demo users, 14 approved/available services, and sample bookings in different statuses.
 
 ## Product overview
 Customers discover approved repair services, submit requests, follow each job through a controlled status timeline, and pay through Stripe Checkout only after a technician marks the work complete. Technicians manage service listings and their own repair queue. Administrators moderate services, manage roles, and monitor platform activity and revenue.
 
 ## Roles and demo accounts
-These local-only accounts are created by `npm run seed` in development. Change every password before exposing a seeded database publicly.
+The following accounts are for assignment evaluation only. Use them only on the demo deployment; rotate or disable them before using the platform for real customers.
 
-| Role | Email | Development password |
+| Role | Email | Demo password |
 |---|---|---|
-| Admin | `admin@fixmate.local` | `FixMateAdmin123!` |
-| Technician 1 | `tech1@fixmate.local` | `FixMateTech123!` |
-| Technician 2 | `tech2@fixmate.local` | `FixMateTech123!` |
-| Customer | `customer@fixmate.local` | `FixMateCustomer123!` |
-
-Production seed credentials must be supplied through environment variables. Do not reuse development credentials in production.
+| Admin | `admin@fixmate.demo` | `FixMateAdmin#2026` |
+| Technician 1 | `tech1@fixmate.demo` | `FixMateTech#2026` |
+| Technician 2 | `tech2@fixmate.demo` | `FixMateTech#2026` |
+| Customer | `customer@fixmate.demo` | `FixMateUser#2026` |
 
 ## Workspace
 - `client/` — Next.js App Router, Better Auth client, public marketplace, role dashboards and payment result pages.
 - `server/` — Express API, Better Auth + MongoDB, JWT/JWKS verification, role middleware, Stripe, ImgBB and seed script.
 
 ## Core data collections
-FixMate owns four business collections: `users` (Better Auth user model), `services`, `bookings`, and `payments`. Better Auth additionally manages its own session, account, verification, and JWT key records.
+FixMate owns four business collections: `users` (Better Auth user model), `services`, `bookings`, and `payments`. Better Auth additionally manages its own session, account and verification records; these auth support collections are not counted as business collections.
 
 Important integrity controls:
 - A unique active-request key prevents duplicate customer/service requests, including concurrent submissions.
@@ -39,7 +37,7 @@ Important integrity controls:
 - `payments.bookingId` and `payments.stripeSessionId` are unique, making Checkout fulfillment idempotent across webhook retries and the success-page fallback.
 
 ## Local setup
-Requirements: Node.js 20+, npm 10+, and MongoDB (Atlas recommended; a replica set is needed for optional multi-document transactions, but the payment fulfillment path uses unique indexes and atomic document updates).
+Requirements: Node.js 20+, npm 10+, and MongoDB (Atlas recommended).
 
 1. Copy `server/.env.example` to `server/.env` and set `MONGODB_URI`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, and `CLIENT_URL`.
 2. Copy `client/.env.local.example` to `client/.env.local` and set `NEXT_PUBLIC_API_URL`.
@@ -50,6 +48,8 @@ Requirements: Node.js 20+, npm 10+, and MongoDB (Atlas recommended; a replica se
 
 ## Environment variables
 See `server/.env.example` and `client/.env.local.example`. Secrets belong only in the server environment. Never commit `.env`, `.env.local`, API keys, JWT signing material, or Stripe webhook secrets.
+
+The deployed API still requires the owner's own `IMGBB_API_KEY`, `STRIPE_SECRET_KEY` (test key), and `STRIPE_WEBHOOK_SECRET` (test webhook signing secret) before image uploads and end-to-end Stripe payment tests can be completed. Do not put these secrets in the client project or in GitHub.
 
 ## Main features
 ### Customer
@@ -70,7 +70,7 @@ See `server/.env.example` and `client/.env.local.example`. Secrets belong only i
 - Approve/reject service listings.
 - Monitor all bookings, payments and total revenue.
 
-## Challenges and optional enhancements
+## Challenges and enhancements
 - Challenge 1: MongoDB server-side search, filter, sort and pagination; URL-synced browse filters.
 - Challenge 2: Better Auth JWT verification, `verifyToken` and role middleware, 401/403 separation and server-side data isolation.
 - Challenge 3: server-enforced booking state machine and customer-owned payment gate.
@@ -78,10 +78,10 @@ See `server/.env.example` and `client/.env.local.example`. Secrets belong only i
 - Added: visual booking timeline, dashboard charts, downloadable PDF receipt (browser print-to-PDF), dark/light mode and responsive empty/loading/error states.
 
 ## Stripe test mode
-Use Stripe test keys only. Example test card: `4242 4242 4242 4242`, any future expiry and any CVC. Configure the deployed webhook endpoint as `POST https://<api-domain>/api/payments/webhook`, subscribe to `checkout.session.completed` and `checkout.session.async_payment_succeeded`, then set the resulting signing secret as `STRIPE_WEBHOOK_SECRET` on the server.
+Use Stripe test keys only. Example test card: `4242 4242 4242 4242`, any future expiry and any CVC. Configure the deployed webhook endpoint as `POST https://as-fixmate-api.vercel.app/api/payments/webhook`, subscribe to `checkout.session.completed` and `checkout.session.async_payment_succeeded`, then set the resulting signing secret as `STRIPE_WEBHOOK_SECRET` on the server.
 
 ## Deployment
-Deploy `client/` and `server/` as separate Vercel projects connected to this repository, with root directories set to `client` and `server`. Configure all environment variables in Vercel. Add the production frontend URL to both `CLIENT_URL` / `CORS_ALLOWED_ORIGINS` and Better Auth `trustedOrigins`. Seed production deliberately with secure environment credentials; verify demo users and services before submission.
+Deploy `client/` and `server/` as separate Vercel projects connected to this monorepo, with root directories set to `client` and `server`. Add the production frontend origin to both `CLIENT_URL` / `CORS_ALLOWED_ORIGINS` and Better Auth trusted origins. Configure all secrets in the server project's Vercel environment only.
 
 ## QA checklist
 - Reload a signed-in dashboard route; the user remains signed in.
@@ -96,4 +96,4 @@ Deploy `client/` and `server/` as separate Vercel projects connected to this rep
 
 ## Packages
 Client: Next.js, React, Better Auth, Tailwind CSS, Lucide React, Sonner, TypeScript.
-Server: Express, Better Auth, `@better-auth/mongo-adapter`, MongoDB driver, `jose`, Stripe, ImgBB upload support via Multer, Helmet, CORS, dotenv and express-rate-limit.
+Server: Express, Better Auth, `@better-auth/mongo-adapter`, MongoDB driver, `jose`, Stripe, Multer, Helmet, CORS, dotenv and express-rate-limit.
