@@ -32,10 +32,10 @@ jobs:
                   target.write(part.read_bytes())
           archive = pathlib.Path("/tmp/fixmate-source.tar.gz")
           archive.write_bytes(base64.b64decode(encoded.read_bytes(), validate=True))
-          subprocess.run(["git", "config", "user.name", "FixMate Build Bot"], check=True)
-subprocess.run(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"], check=True)
+                    subprocess.run(["git", "config", "user.name", "FixMate Build Bot"], check=True)
+          subprocess.run(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"], check=True)
 
-with tempfile.TemporaryDirectory(prefix="fixmate-") as temp:
+          with tempfile.TemporaryDirectory(prefix="fixmate-") as temp:
               source = pathlib.Path(temp) / "source"
               source.mkdir()
               subprocess.run(["tar", "-xzf", str(archive), "-C", str(source)], check=True)
