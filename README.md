@@ -3,9 +3,11 @@
 **Repairs, without the blind spots.** FixMate is a role-based repair-service marketplace for smart devices and home appliances, built around a transparent **pay-after-service** workflow.
 
 ## Live links
-- Client: `https://as-fixmate.vercel.app` (configure after deployment)
-- API: `https://as-fixmate-api.vercel.app` (configure after deployment)
+- Client: https://as-fixmate.vercel.app
+- API: https://as-fixmate-api.vercel.app
 - Repository: https://github.com/as777hk/AS_Fixmate
+
+Both Vercel projects are publicly reachable. The application build is deployed; configure the required server environment variables and seed the production database before testing authenticated and payment flows.
 
 ## Product overview
 Customers discover approved repair services, submit requests, follow each job through a controlled status timeline, and pay through Stripe Checkout only after a technician marks the work complete. Technicians manage service listings and their own repair queue. Administrators moderate services, manage roles, and monitor platform activity and revenue.
