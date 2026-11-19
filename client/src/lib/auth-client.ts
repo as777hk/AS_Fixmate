@@ -7,7 +7,7 @@ import type { UserProfile } from "@/types";
 const authBaseURL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/$/, "");
 
 export const authClient = createAuthClient({
-  baseURL: authBaseURL(),
+  baseURL: authBaseURL,
   plugins: [jwtClient()],
   fetchOptions: { credentials: "include" }
 });
