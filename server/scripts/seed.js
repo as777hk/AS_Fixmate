@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { pathToFileURL } from "node:url";
 import { auth } from "../src/lib/auth.js";
 import { db, connectDb, ensureIndexes } from "../src/config/db.js";
 
@@ -64,7 +65,7 @@ const services = [
   { seedKey: "fan-wiring", title: "Ceiling Fan & Light Wiring", category: "Electrical", description: "Safe ceiling fan, light fixture and switch wiring with circuit isolation and a final functional test.", basePrice: 25, estimatedDuration: "1–2 hours", serviceMode: "Home Visit", serviceArea: "Dhanmondi, Dhaka", image: image("photo-1621905252507-b35492cc74b4") }
 ];
 
-async function run() {
+export async function runSeed() {
   await connectDb();
   await ensureIndexes();
   const [admin, techOne, techTwo, customer] = await Promise.all([
@@ -162,10 +163,15 @@ async function run() {
   console.log(`Customer: ${customer.email}`);
   console.log("Created/updated 14 approved services, 2 pending services, 5 sample bookings and a paid demo transaction.");
   console.log("Local demo passwords are documented in README.md; production values must be supplied through environment variables.");
-  process.exit(0);
+  return { success: true, users: 4, approvedServices: 14, pendingServices: 2, bookings: 5, payments: 1 };
 }
 
-run().catch((error) => {
-  console.error("FixMate seed failed:", error);
-  process.exit(1);
-});
+if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
+  runSeed().then((result) => {
+    console.log("FixMate seed result:", result);
+    process.exit(0);
+  }).catch((error) => {
+    console.error("FixMate seed failed:", error);
+    process.exit(1);
+  });
+}
