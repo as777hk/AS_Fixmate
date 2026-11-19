@@ -16,7 +16,7 @@ export function Navbar() {
   const { user, isPending } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const nav = [{ href: "/", label: "Home" }, { href: "/services", label: "Find a service" }, { href: "/about", label: "How it works" }];
+  const nav = [{ href: "/", label: "Home" }, { href: "/about", label: "About" }, { href: "/services", label: "Services" }];
   const toggleTheme = () => {
     const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
