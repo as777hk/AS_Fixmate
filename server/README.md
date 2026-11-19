@@ -3,8 +3,8 @@
 Express REST API for FixMate. It owns MongoDB persistence, Better Auth, JWKS/JWT verification, role middleware, technician image uploads, and Stripe Checkout/webhook fulfillment.
 
 ## Live API
-- Production: `https://as-fixmate-api.vercel.app` (set after deployment)
-- Health: `/api/health`
+- Production: https://as-fixmate-api.vercel.app
+- Health: /api/health
 - Better Auth: `/api/auth/*`
 - Stripe webhook: `/api/payments/webhook`
 
