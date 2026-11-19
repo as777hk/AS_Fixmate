@@ -3,8 +3,8 @@
 Next.js App Router frontend for the FixMate repair-service marketplace. The client provides public service discovery, customer booking, technician work management, admin operations, Better Auth UI, and Stripe payment result screens.
 
 ## Live URL
-- Production: `https://as-fixmate.vercel.app` (set after deployment)
-- API: `https://as-fixmate-api.vercel.app`
+- Production: https://as-fixmate.vercel.app
+- API: https://as-fixmate-api.vercel.app
 
 ## Local setup
 1. From repository root run `npm install`.
