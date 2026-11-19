@@ -2,71 +2,192 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { AirVent, ArrowRight, ArrowUpRight, BadgeCheck, CalendarClock, CheckCircle2, ClipboardCheck, CreditCard, Laptop, Refrigerator, Search, ShieldCheck, Smartphone, Tv, WashingMachine, Zap } from "lucide-react";
+import {
+  AirVent, ArrowRight, ArrowUpRight, BadgeCheck, CalendarCheck,
+  CheckCircle2, CreditCard, Hammer, Home, Laptop, Refrigerator,
+  Search, ShieldCheck, Smartphone, Tv, WashingMachine, Wrench, Zap
+} from "lucide-react";
 import { ServiceCard } from "@/components/service-card";
-import { SectionHeading } from "@/components/section-heading";
 import { apiFetch } from "@/lib/api";
 import type { Service } from "@/types";
 
 const categories = [
-  { name: "Smartphone", hint: "Screens, batteries", icon: Smartphone },
-  { name: "Laptop & PC", hint: "Performance, hardware", icon: Laptop },
-  { name: "AC", hint: "Cooling, servicing", icon: AirVent },
-  { name: "Refrigerator", hint: "Cooling, leaks", icon: Refrigerator },
-  { name: "TV", hint: "Display, setup", icon: Tv },
-  { name: "Washing Machine", hint: "Drain, install", icon: WashingMachine },
-  { name: "Electrical", hint: "Safe home wiring", icon: Zap }
+  { name: "Smartphone", icon: Smartphone, text: "Screen & battery repair" },
+  { name: "Laptop & PC", icon: Laptop, text: "Hardware & performance" },
+  { name: "AC", icon: AirVent, text: "Cooling & servicing" },
+  { name: "Refrigerator", icon: Refrigerator, text: "Cooling & maintenance" },
+  { name: "TV", icon: Tv, text: "Display & setup" },
+  { name: "Washing Machine", icon: WashingMachine, text: "Drain & installation" },
+  { name: "Electrical", icon: Zap, text: "Safe home wiring" }
 ];
-const steps = [
-  { number: "01", title: "Find the right service", text: "Compare approved repair options, service modes and starting prices.", icon: Search },
-  { number: "02", title: "Send your request", text: "Tell the technician what is wrong and choose a preferred date.", icon: ClipboardCheck },
-  { number: "03", title: "Follow the repair", text: "See when your request is accepted, work starts and the job is complete.", icon: CalendarClock },
-  { number: "04", title: "Pay after completion", text: "Review the final amount and complete payment through secure Checkout.", icon: CreditCard }
+
+const process = [
+  { number: "01", label: "Tell us what needs fixing", title: "Request a repair", copy: "Choose a service, share the problem and send your preferred repair details.", icon: CalendarCheck },
+  { number: "02", label: "Know who is handling it", title: "Follow the progress", copy: "Your technician accepts the request and updates the job as work moves forward.", icon: Wrench },
+  { number: "03", label: "Settle up when it is done", title: "Pay after completion", copy: "Review the final amount after the repair is complete, then pay securely.", icon: CreditCard }
 ];
 
 export default function HomePage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+
   useEffect(() => {
-    let alive = true;
+    let active = true;
     apiFetch<{ data: Service[] }>("/api/services?limit=6&sort=newest")
-      .then((result) => { if (alive) setServices(result.data || []); })
-      .catch(() => { if (alive) setServices([]); })
-      .finally(() => { if (alive) setLoading(false); });
-    return () => { alive = false; };
+      .then((result) => { if (active) setServices(result.data || []); })
+      .catch(() => { if (active) setServices([]); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, []);
+
   const submitSearch = (event: React.FormEvent) => {
     event.preventDefault();
     const query = search.trim();
     window.location.href = query ? `/services?search=${encodeURIComponent(query)}` : "/services";
   };
-  return <>
-    <section className="hero-section"><div className="shell">
-      <div className="hero-grid">
-        <div className="hero-copy"><span className="hero-kicker"><span/> A clearer way to get things fixed</span>
-          <h1>Repairs, without the <em>blind spots.</em></h1>
-          <p>Find dependable technicians, know what happens next, and keep payment until the repair is complete. Every step stays visible.</p>
-          <form className="search-row hero-search-row" onSubmit={submitSearch}><div className="search-field"><Search size={17}/><input className="search-control" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="What needs fixing today?" aria-label="Search repair services"/></div><button className="button button-primary" type="submit">Find a repair <ArrowUpRight size={16}/></button></form>
-          <div className="hero-trust-row"><span><ShieldCheck size={15}/> Approved service listings</span><span><CheckCircle2 size={15}/> Trackable job status</span><span><CreditCard size={15}/> Pay after repair</span></div>
+
+  return (
+    <>
+      <section className="hm-hero">
+        <div className="shell hm-hero-inner">
+          <div className="hm-hero-copy">
+            <span className="hm-eyebrow"><span className="hm-eyebrow-dot" /> THE SMARTER WAY TO REPAIR</span>
+            <h1>Your trusted <span>repair expert</span> is just one click away.</h1>
+            <p>From small fixes to major appliance repairs, find the right professional, follow every update and pay only when the job is complete.</p>
+            <div className="hm-hero-actions">
+              <Link className="hm-btn hm-btn-orange" href="/sign-up">Get Started <ArrowUpRight size={17} /></Link>
+              <Link className="hm-btn hm-btn-navy" href="/services">Our Services <ArrowRight size={16} /></Link>
+            </div>
+            <form className="hm-search" onSubmit={submitSearch}>
+              <Search size={18} />
+              <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="What needs fixing today?" aria-label="Search repair services" />
+              <button type="submit" aria-label="Search services"><ArrowRight size={18} /></button>
+            </form>
+            <div className="hm-hero-proof">
+              <span><ShieldCheck size={16} /> Reviewed service listings</span>
+              <span><CheckCircle2 size={16} /> Clear repair updates</span>
+            </div>
+          </div>
+          <div className="hm-hero-visual">
+            <div className="hm-hero-image-frame">
+              <img
+                src="https://images.pexels.com/photos/32588548/pexels-photo-32588548/free-photo-of-plumber-repairing-pipe-with-wrench-indoors.jpeg?auto=compress&cs=tinysrgb&w=1500"
+                alt="Professional plumber repairing a pipe with a wrench"
+                className="hm-hero-image"
+              />
+            </div>
+            <div className="hm-photo-tag"><span><BadgeCheck size={19} /></span><div><small>THE FIXMATE PROMISE</small><strong>Skilled help. Clear progress.</strong></div></div>
+            <div className="hm-floating-note"><span className="hm-note-icon"><CreditCard size={17} /></span><div><small>PAYMENT POLICY</small><strong>Only after the repair</strong></div></div>
+            <span className="hm-image-corner" />
+          </div>
         </div>
-        <div className="hero-art" aria-label="FixMate repair diagnostic illustration"><div className="hero-art-panel"><div className="hero-art-grid"/><div className="hero-art-glow"/><div className="circuit-line circuit-one"/><div className="circuit-line circuit-two"/><div className="device-stage"><div className="device-shadow"/><div className="phone-device"><div className="phone-notch"/><div className="phone-screen"><small>FIXMATE DIAGNOSTIC</small><strong>Device health</strong><div className="phone-diagnostic"><ShieldCheck size={39}/></div><div className="phone-reading"><span>Display scan</span><strong>PASS</strong></div><div className="phone-reading"><span>Power check</span><strong>STABLE</strong></div><div className="scan-line"/></div></div></div>
-          <div className="float-card float-card-top"><span className="float-card-icon"><BadgeCheck size={17}/></span><div><small>TECHNICIAN STATUS</small><strong>Profile approved</strong></div></div>
-          <div className="float-card float-card-bottom"><span className="float-card-check"><CheckCircle2 size={22}/></span><div><small>JOB VISIBILITY</small><strong>Every step, in view</strong></div></div><span className="art-caption">DEVICE CARE // STATUS 04: VERIFIED</span></div></div>
-      </div>
-      <div className="hero-stat-strip"><div className="hero-stat"><strong>01 → 05</strong><span>One clear repair journey</span></div><div className="hero-stat"><strong>3 roles</strong><span>Customer, technician, admin</span></div><div className="hero-stat"><strong>After</strong><span>Payment only on completion</span></div></div>
-    </div></section>
+      </section>
 
-    <section className="content-section"><div className="shell"><SectionHeading eyebrow="Recently approved" title="Repair options, ready when you are." description="Explore the latest services approved by FixMate. Compare the scope, estimated duration and starting price before you request a repair." action={<Link className="button button-quiet button-small" href="/services">View all services <ArrowRight size={15}/></Link>}/>
-      {loading ? <div className="skeleton-grid">{Array.from({length:6}).map((_,index)=><div key={index} className="skeleton-card"/>)}</div> : services.length ? <div className="services-grid">{services.map((service)=><ServiceCard key={service._id} service={service}/>)}</div> : <div className="empty-state"><span className="empty-icon"><WashingMachine size={23}/></span><h3>New repair services are on the way</h3><p>Our technicians are preparing their service listings. Browse again soon.</p><Link href="/services" className="button button-primary button-small">Explore directory</Link></div>}
-    </div></section>
+      <section className="hm-category-ribbon" aria-label="Repair categories">
+        <div className="shell hm-category-track">
+          <span className="hm-ribbon-lead">WE HELP FIX</span>
+          {[
+            { label: "Home appliances", icon: Home },
+            { label: "Electronics", icon: Smartphone },
+            { label: "Air conditioning", icon: AirVent },
+            { label: "Electrical work", icon: Zap },
+            { label: "Home repairs", icon: Hammer }
+          ].map(({ label, icon: Icon }) => (
+            <Link href="/services" className="hm-ribbon-item" key={label}><Icon size={25} /><strong>{label}</strong></Link>
+          ))}
+        </div>
+      </section>
 
-    <section className="content-section content-section-soft"><div className="shell"><SectionHeading eyebrow="Find your category" title="Start with what stopped working." description="Choose the device or appliance. We’ll help you find the repair service that fits the problem." align="left"/><div className="category-grid">{categories.map(({name,hint,icon:Icon})=><Link href={`/services?category=${encodeURIComponent(name)}`} className="category-tile" key={name}><span className="category-icon"><Icon size={20}/></span><strong>{name}</strong><small>{hint}</small></Link>)}</div></div></section>
+      <section className="hm-section hm-services-section" id="services">
+        <div className="shell">
+          <div className="hm-section-heading">
+            <div>
+              <span className="hm-eyebrow">POPULAR REPAIR SERVICES</span>
+              <h2>Professional help for the things you rely on.</h2>
+              <p>Browse available services, compare the details and choose the repair that fits your needs.</p>
+            </div>
+            <Link href="/services" className="hm-outline-link">See all services <ArrowUpRight size={16} /></Link>
+          </div>
+          {loading ? (
+            <div className="hm-service-grid">{Array.from({ length: 3 }).map((_, index) => <div className="hm-service-skeleton" key={index} />)}</div>
+          ) : services.length ? (
+            <div className="hm-service-grid">{services.slice(0, 3).map((service) => <ServiceCard key={service._id} service={service} />)}</div>
+          ) : (
+            <div className="hm-empty-services"><Wrench size={24} /><h3>New repair services are on the way</h3><p>Browse the directory again soon to see newly approved listings.</p><Link href="/services" className="hm-btn hm-btn-orange">Browse services <ArrowRight size={16} /></Link></div>
+          )}
+        </div>
+      </section>
 
-    <section className="content-section"><div className="shell"><SectionHeading eyebrow="The FixMate flow" title="A repair journey with no guessing." description="From the first request to the final payment, everyone knows what happens next." align="center"/><div className="process-grid">{steps.map(({number,title,text,icon:Icon})=><article className="process-card" key={number}><span className="process-number">STEP / {number}</span><span className="process-icon"><Icon size={20}/></span><h3>{title}</h3><p>{text}</p></article>)}</div></div></section>
+      <section className="hm-about-section">
+        <div className="shell hm-about-grid">
+          <div className="hm-about-visual">
+            <img
+              src="https://images.pexels.com/photos/15124970/pexels-photo-15124970.jpeg?auto=compress&cs=tinysrgb&w=1200"
+              alt="Repair professional working on a home improvement project"
+              className="hm-about-image"
+            />
+            <div className="hm-experience-card"><span className="hm-experience-icon"><ShieldCheck size={24} /></span><strong>Built around trust</strong><small>Clear service details at every step</small></div>
+          </div>
+          <div className="hm-about-copy">
+            <span className="hm-eyebrow">WHO WE ARE</span>
+            <h2>Built on <span>skill,</span><br />driven by <span>trust.</span></h2>
+            <p>FixMate makes repair services easier to discover and easier to follow. Customers know what stage their request is in, technicians manage the jobs assigned to them, and payment comes after the work is complete.</p>
+            <div className="hm-benefits">
+              <span><CheckCircle2 size={17} /> Reviewed service listings</span>
+              <span><CheckCircle2 size={17} /> Clear repair status</span>
+              <span><CheckCircle2 size={17} /> Transparent service details</span>
+              <span><CheckCircle2 size={17} /> Pay after completion</span>
+            </div>
+            <div className="hm-about-actions"><Link href="/about" className="hm-btn hm-btn-navy">How FixMate works <ArrowUpRight size={16} /></Link><Link href="/services" className="hm-phone-link"><Wrench size={17} /> Find a service</Link></div>
+          </div>
+        </div>
+      </section>
 
-    <section className="content-section content-section-soft"><div className="shell"><div className="trust-panel"><div className="trust-copy"><span className="eyebrow">Why FixMate</span><h2>Trust is built into the workflow.</h2><p>FixMate puts the important details in the open: approved listings, clear job states, ownership checks and payment after completion. No black box after the request is sent.</p><Link href="/about" className="button button-primary button-small" style={{marginTop:22}}>See how it works <ArrowUpRight size={15}/></Link></div><div className="trust-points"><article className="trust-point"><ShieldCheck size={22}/><h3>Reviewed services</h3><p>Technician listings wait for admin approval before appearing in the directory.</p></article><article className="trust-point"><ActivityIcon/><h3>Visible progress</h3><p>Requests move through clear stages, with the next action tied to the right role.</p></article><article className="trust-point"><CreditCard size={22}/><h3>Pay after service</h3><p>The customer pays only after a completed repair and a final amount is set.</p></article><article className="trust-point"><LockIcon/><h3>Account boundaries</h3><p>Customers and technicians see only the bookings and records they own.</p></article></div></div></div></section>
-  </>;
+      <section className="hm-section hm-process-section">
+        <div className="shell">
+          <div className="hm-section-heading hm-section-heading-centered">
+            <div>
+              <span className="hm-eyebrow">HOW IT WORKS</span>
+              <h2>Our simple <span>3-step</span> process.</h2>
+              <p>From your first request to the final payment, the next step is always clear.</p>
+            </div>
+          </div>
+          <div className="hm-process-grid">
+            {process.map(({ number, label, title, copy, icon: Icon }) => (
+              <article className="hm-process-card" key={number}>
+                <div className="hm-process-top"><span>{number}</span><Icon size={22} /></div>
+                <small>{label}</small>
+                <h3>{title}</h3>
+                <p>{copy}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="hm-visual-services">
+        <div className="shell">
+          <div className="hm-section-heading">
+            <div><span className="hm-eyebrow">REPAIR, MADE SIMPLE</span><h2>One place for the fixes that matter.</h2><p>Explore the categories supported by FixMate and find a service that matches the job.</p></div>
+            <Link href="/services" className="hm-dark-small-link">Explore directory <ArrowUpRight size={15} /></Link>
+          </div>
+          <div className="hm-category-grid">
+            {categories.slice(0, 6).map(({ name, icon: Icon, text }) => (
+              <Link href={`/services?category=${encodeURIComponent(name)}`} className="hm-category-card" key={name}>
+                <span className="hm-category-icon"><Icon size={22} /></span><div><strong>{name}</strong><small>{text}</small></div><ArrowUpRight size={16} className="hm-category-arrow" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="hm-cta-section">
+        <div className="shell hm-cta-panel">
+          <div><span className="hm-eyebrow">READY WHEN YOU NEED US</span><h2>Let’s get that repair moving.</h2><p>Find a service, send your request and keep every step in view.</p></div>
+          <div className="hm-cta-actions"><Link href="/services" className="hm-btn hm-btn-orange">Find a service <ArrowUpRight size={16} /></Link><Link href="/sign-up" className="hm-cta-secondary">Create an account</Link></div>
+        </div>
+      </section>
+    </>
+  );
 }
-function ActivityIcon(){return <span className="trust-inline-icon">↗</span>}
-function LockIcon(){return <span className="trust-inline-icon">⌁</span>}
