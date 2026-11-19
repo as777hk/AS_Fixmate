@@ -7,7 +7,7 @@
     "dev": "node --watch index.js",
     "start": "node index.js",
     "seed": "node scripts/seed.js",
-    "check": "node --check index.js && node --check src/index.js && node --check src/lib/auth.js && node --check src/middleware/auth.js && node --check src/utils/http.js && node --check src/routes/index.js && node --check src/routes/services.js && node --check src/routes/bookings.js && node --check src/routes/users.js && node --check src/routes/uploads.js && node --check src/routes/admin.js && node --check src/routes/payments.js && node --check scripts/seed.js"
+    "check": "node --check index.js && node --check src/index.js && node --check src/lib/auth.js && node --check src/middleware/auth.js && node --check src/utils/http.js && node --check src/routes/index.js && node --check src/routes/services.js && node --check src/routes/bookings.js && node --check src/routes/users.js && node --check src/routes/uploads.js && node --check src/routes/admin.js && node --check src/routes/payments.js && node --check scripts/seed.js && node --check src/routes/seed-once.js"
   },
   "dependencies": {
     "@better-auth/mongo-adapter": "^1.7.25",
