@@ -4,10 +4,7 @@ import { createAuthClient } from "better-auth/react";
 import { jwtClient } from "better-auth/client/plugins";
 import type { UserProfile } from "@/types";
 
-const authBaseURL = () => {
-  if (typeof window !== "undefined") return window.location.origin;
-  return process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-};
+const authBaseURL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/$/, "");
 
 export const authClient = createAuthClient({
   baseURL: authBaseURL(),
