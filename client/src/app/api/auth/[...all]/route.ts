@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 
-const API_URL = (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/$/, "");
+const API_URL = (process.env.INTERNAL_API_URL || process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/$/, "");
 
 async function proxy(request: NextRequest, context: { params: Promise<{ all: string[] }> }) {
   const { all } = await context.params;
