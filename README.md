@@ -7,7 +7,7 @@
 - API: https://as-fixmate-api.vercel.app
 - GitHub monorepo: https://github.com/as777hk/AS_Fixmate
 
-The frontend and Express API are deployed as separate Vercel projects from the `client/` and `server/` roots of this repository. MongoDB Atlas is connected to the production API. The production database is seeded with demo users, 14 approved/available services, and sample bookings in different statuses.
+The frontend and Express API are deployed as separate Vercel projects from the `client/` and `server/` roots of this repository. The browser sends `/api/*` requests to the frontend origin, and Vercel rewrites them to the Express API so Better Auth cookies remain first-party on the `.vercel.app` deployment. MongoDB Atlas is connected to the production API. The production database is seeded with demo users, 14 approved/available services, and sample bookings in different statuses.
 
 ## Product overview
 Customers discover approved repair services, submit requests, follow each job through a controlled status timeline, and pay through Stripe Checkout only after a technician marks the work complete. Technicians manage service listings and their own repair queue. Administrators moderate services, manage roles, and monitor platform activity and revenue.
@@ -41,13 +41,13 @@ Requirements: Node.js 20+, npm 10+, and MongoDB (Atlas recommended).
 
 1. Copy `server/.env.example` to `server/.env` and set `MONGODB_URI`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, and `CLIENT_URL`.
 2. For Google social sign-in, create a Google OAuth Web client and set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in the server environment. Google sign-up creates a customer account by default; technician registration remains available through the email form.
-3. Copy `client/.env.local.example` to `client/.env.local`, set `NEXT_PUBLIC_API_URL`, and set `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true` only after the server Google credentials are configured.
+3. Copy `client/.env.local.example` to `client/.env.local`, set `NEXT_PUBLIC_API_URL` and `INTERNAL_API_URL`, and set `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true` only after the server Google credentials are configured. In production, `NEXT_PUBLIC_API_URL` points to the frontend origin and `INTERNAL_API_URL` points to the separate API project.
 4. Install from the repository root: `npm install`.
 5. Seed local demo users, services, bookings and payment history: `npm run seed`.
 6. Start both applications: `npm run dev`.
 7. Open `http://localhost:3000`; the API health endpoint is `http://localhost:5000/api/health`.
 
-Google OAuth redirect URI for production: `https://as-fixmate-api.vercel.app/api/auth/callback/google`. For local development with the Express auth server on port 5000, use `http://localhost:5000/api/auth/callback/google` in the Google OAuth client.
+Google OAuth redirect URI for production: `https://as-fixmate.vercel.app/api/auth/callback/google` (the frontend-origin proxy forwards the callback to the API). For local development with the Express auth server on port 5000, use `http://localhost:5000/api/auth/callback/google` in the Google OAuth client.
 
 ## Environment variables
 See `server/.env.example` and `client/.env.local.example`. Secrets belong only in the server environment. Never commit `.env`, `.env.local`, API keys, JWT signing material, or Stripe webhook secrets.
