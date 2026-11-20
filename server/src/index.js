@@ -23,7 +23,8 @@ app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(cors({
   origin(origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error("Origin is not allowed by FixMate CORS policy."));
+    console.warn("Blocked FixMate CORS origin:", origin);
+    return callback(new Error(`Origin is not allowed by FixMate CORS policy: ${origin}`));
   },
   credentials: true,
   methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
