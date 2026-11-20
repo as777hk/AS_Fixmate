@@ -22,9 +22,10 @@ const categories = [
 ];
 
 const process = [
-  { number: "01", label: "Tell us what needs fixing", title: "Request a repair", copy: "Choose a service, share the problem and send your preferred repair details.", icon: CalendarCheck },
-  { number: "02", label: "Know who is handling it", title: "Follow the progress", copy: "Your technician accepts the request and updates the job as work moves forward.", icon: Wrench },
-  { number: "03", label: "Settle up when it is done", title: "Pay after completion", copy: "Review the final amount after the repair is complete, then pay securely.", icon: CreditCard }
+  { number: "01", label: "Explore approved listings", title: "Find a service", copy: "Browse repair categories and compare approved services, prices and technicians.", icon: Search },
+  { number: "02", label: "Share the repair details", title: "Send a request", copy: "Choose a preferred date, add your contact details and explain what needs fixing.", icon: CalendarCheck },
+  { number: "03", label: "Follow the job status", title: "Technician fixes it", copy: "Your technician accepts the request, starts the work and updates the repair progress.", icon: Wrench },
+  { number: "04", label: "Settle up when it is done", title: "Pay after completion", copy: "Review the final amount after the repair is complete, then pay securely.", icon: CreditCard }
 ];
 
 export default function HomePage() {
@@ -110,9 +111,9 @@ export default function HomePage() {
             <Link href="/services" className="hm-outline-link">See all services <ArrowUpRight size={16} /></Link>
           </div>
           {loading ? (
-            <div className="hm-service-grid">{Array.from({ length: 3 }).map((_, index) => <div className="hm-service-skeleton" key={index} />)}</div>
+            <div className="hm-service-grid">{Array.from({ length: 6 }).map((_, index) => <div className="hm-service-skeleton" key={index} />)}</div>
           ) : services.length ? (
-            <div className="hm-service-grid">{services.slice(0, 3).map((service) => <ServiceCard key={service._id} service={service} />)}</div>
+            <div className="hm-service-grid">{services.slice(0, 6).map((service) => <ServiceCard key={service._id} service={service} />)}</div>
           ) : (
             <div className="hm-empty-services"><Wrench size={24} /><h3>New repair services are on the way</h3><p>Browse the directory again soon to see newly approved listings.</p><Link href="/services" className="hm-btn hm-btn-orange">Browse services <ArrowRight size={16} /></Link></div>
           )}
@@ -149,7 +150,7 @@ export default function HomePage() {
           <div className="hm-section-heading hm-section-heading-centered">
             <div>
               <span className="hm-eyebrow">HOW IT WORKS</span>
-              <h2>Our simple <span>3-step</span> process.</h2>
+              <h2>Our simple <span>4-step</span> process.</h2>
               <p>From your first request to the final payment, the next step is always clear.</p>
             </div>
           </div>
@@ -173,7 +174,7 @@ export default function HomePage() {
             <Link href="/services" className="hm-dark-small-link">Explore directory <ArrowUpRight size={15} /></Link>
           </div>
           <div className="hm-category-grid">
-            {categories.slice(0, 6).map(({ name, icon: Icon, text }) => (
+            {categories.map(({ name, icon: Icon, text }) => (
               <Link href={`/services?category=${encodeURIComponent(name)}`} className="hm-category-card" key={name}>
                 <span className="hm-category-icon"><Icon size={22} /></span><div><strong>{name}</strong><small>{text}</small></div><ArrowUpRight size={16} className="hm-category-arrow" />
               </Link>
