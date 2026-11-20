@@ -9,7 +9,17 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.pexels.com" }
     ]
   },
-  poweredByHeader: false
+  poweredByHeader: false,
+  // Keep browser requests and Better Auth cookies on the frontend's first-party host.
+  async rewrites() {
+    const apiOrigin = (process.env.INTERNAL_API_URL || "https://as-fixmate-api.vercel.app").replace(/\/$/, "");
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${apiOrigin}/api/:path*`
+      }
+    ];
+  }
 };
 
 export default nextConfig;
