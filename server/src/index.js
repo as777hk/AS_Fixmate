@@ -37,7 +37,20 @@ app.post("/api/payments/webhook", express.raw({ type: "application/json", limit:
 // Apply rate limits to Better Auth as well as business APIs.
 app.use("/api", rateLimit({ windowMs: 60_000, limit: 240, standardHeaders: "draft-8", legacyHeaders: false }));
 // Better Auth consumes its own request body; do not place express.json() before this handler.
-app.all("/api/auth/*", toNodeHandler(auth));
+const authHandler = toNodeHandler(auth);
+app.all("/api/auth/*", async (req, res, next) => {
+  try {
+    // Ensure the shared MongoDB store is connected before Better Auth reads or writes OAuth state.
+    await connectDb();
+    return authHandler(req, res, next);
+  } catch (error) {
+    console.error("FixMate auth database unavailable:", error?.message || error);
+    return res.status(503).json({
+      success: false,
+      message: "Authentication is temporarily unavailable. Please try again."
+    });
+  }
+});
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: false, limit: "1mb" }));
 
