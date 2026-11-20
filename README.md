@@ -40,11 +40,14 @@ Important integrity controls:
 Requirements: Node.js 20+, npm 10+, and MongoDB (Atlas recommended).
 
 1. Copy `server/.env.example` to `server/.env` and set `MONGODB_URI`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, and `CLIENT_URL`.
-2. Copy `client/.env.local.example` to `client/.env.local` and set `NEXT_PUBLIC_API_URL`.
-3. Install from the repository root: `npm install`.
-4. Seed local demo users, services, bookings and payment history: `npm run seed`.
-5. Start both applications: `npm run dev`.
-6. Open `http://localhost:3000`; the API health endpoint is `http://localhost:5000/api/health`.
+2. For Google social sign-in, create a Google OAuth Web client and set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in the server environment. Google sign-up creates a customer account by default; technician registration remains available through the email form.
+3. Copy `client/.env.local.example` to `client/.env.local`, set `NEXT_PUBLIC_API_URL`, and set `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true` only after the server Google credentials are configured.
+4. Install from the repository root: `npm install`.
+5. Seed local demo users, services, bookings and payment history: `npm run seed`.
+6. Start both applications: `npm run dev`.
+7. Open `http://localhost:3000`; the API health endpoint is `http://localhost:5000/api/health`.
+
+Google OAuth redirect URI for production: `https://as-fixmate-api.vercel.app/api/auth/callback/google`. For local development with the Express auth server on port 5000, use `http://localhost:5000/api/auth/callback/google` in the Google OAuth client.
 
 ## Environment variables
 See `server/.env.example` and `client/.env.local.example`. Secrets belong only in the server environment. Never commit `.env`, `.env.local`, API keys, JWT signing material, or Stripe webhook secrets.
@@ -52,6 +55,10 @@ See `server/.env.example` and `client/.env.local.example`. Secrets belong only i
 The deployed API still requires the owner's own `IMGBB_API_KEY`, `STRIPE_SECRET_KEY` (test key), and `STRIPE_WEBHOOK_SECRET` (test webhook signing secret) before image uploads and end-to-end Stripe payment tests can be completed. Do not put these secrets in the client project or in GitHub.
 
 ## Main features
+### Authentication
+- Email/password sign-up and sign-in for customers and technicians.
+- Optional Google OAuth sign-in/sign-up through Better Auth; new Google accounts receive the customer role by default.
+
 ### Customer
 - Browse approved and available services with server-side search, category/mode filters, sorting and pagination.
 - Submit a repair request with service address, date and problem details.
