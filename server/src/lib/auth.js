@@ -9,6 +9,9 @@ const configuredSecret = process.env.BETTER_AUTH_SECRET;
 if (process.env.NODE_ENV === "production" && !configuredSecret) {
   throw new Error("BETTER_AUTH_SECRET must be configured in production.");
 }
+const googleClientId = process.env.GOOGLE_CLIENT_ID?.trim();
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
+
 const trustedOrigins = [...new Set([
   process.env.CLIENT_URL || "http://localhost:3000",
   ...(process.env.CORS_ALLOWED_ORIGINS || "").split(",").map((item) => item.trim()).filter(Boolean),
@@ -22,6 +25,16 @@ export const auth = betterAuth({
   secret: configuredSecret || "local-only-fixmate-secret-change-before-production-32-chars",
   database: mongodbAdapter(db),
   trustedOrigins,
+  ...(googleClientId && googleClientSecret ? {
+    socialProviders: {
+      google: {
+        clientId: googleClientId,
+        clientSecret: googleClientSecret,
+        prompt: "select_account",
+        mapProfileToUser: () => ({ role: "customer" })
+      }
+    }
+  } : {}),
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 6,
