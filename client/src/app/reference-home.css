@@ -125,7 +125,7 @@ body { font-family: Arial, Helvetica, sans-serif; }
 .hm-section-heading-centered h2 { margin-top: 10px; }
 .hm-section-heading h2 span { color: #f15b24; }
 .hm-section-heading-centered p { max-width: 520px; }
-.hm-process-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 17px; }
+.hm-process-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 17px; }
 .hm-process-card { min-height: 220px; padding: 22px; background: #f0f1f3; border: 1px solid #e7e8eb; border-radius: 12px; transition: transform .2s,box-shadow .2s; }
 .hm-process-card:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(25,30,60,.08); }
 .hm-process-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
@@ -162,6 +162,7 @@ body { font-family: Arial, Helvetica, sans-serif; }
 .button-primary:hover { background: #d94c1c; }
 @media (max-width: 1000px) {
   .hm-hero-inner { gap: 26px; grid-template-columns: .95fr 1.05fr; }
+  .hm-process-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .hm-hero-visual { min-height: 415px; }
   .hm-hero-copy h1 { font-size: clamp(38px,5vw,55px); }
   .hm-ribbon-item strong { font-size: 13px; }
